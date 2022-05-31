@@ -150,14 +150,14 @@ namespace TrackerLibrary.DataAccess.TextHelpers
                 foreach (var round in rounds)
                 {
                     string[] msText = round.Split('^');
-                    var matches = new List<MatchupModel>();
+                    List<MatchupModel> ms = new List<MatchupModel>();
 
                     foreach (var matchupModelTextId in msText)
                     {
-                        matches.Add(matchups.Where(x => x.Id == int.Parse(matchupModelTextId)).First());
+                        ms.Add(matchups.Where(x => x.Id == int.Parse(matchupModelTextId)).First());
                     }
 
-                    tournament.Rounds.Add(matches);
+                    tournament.Rounds.Add(ms);
                 }
 
                 output.Add(tournament);
@@ -173,7 +173,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
 
             foreach (var prize in models)
             {
-                lines.Add($"{prize.Id},{prize.PlaceNumber},{prize.PlaceName},{prize.PrizeAmount},{prize.PrizePercentage}");
+                lines.Add($"{ prize.Id },{ prize.PlaceNumber },{ prize.PlaceName },{ prize.PrizeAmount },{ prize.PrizePercentage }");
             }
 
             File.WriteAllLines(GlobalConfig.PrizesFile.FullFilePath(), lines);
@@ -185,7 +185,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
 
             foreach (var person in models)
             {
-                lines.Add($"{person.Id},{person.FirstName},{person.LastName},{person.EmailAddress},{person.CellphoneNumber}");
+                lines.Add($"{ person.Id },{ person.FirstName },{ person.LastName },{ person.EmailAddress },{ person.CellphoneNumber }");
             }
 
             File.WriteAllLines(GlobalConfig.PeopleFile.FullFilePath(), lines);
@@ -197,7 +197,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
 
             foreach (var team in models)
             {
-                lines.Add($"{team.Id},{team.TeamName},{ConvertPeopleListToString(team.TeamMembers)}");
+                lines.Add($"{ team.Id },{ team.TeamName },{ ConvertPeopleListToString(team.TeamMembers) }");
             }
 
             File.WriteAllLines(GlobalConfig.TeamFile.FullFilePath(), lines);
@@ -234,31 +234,30 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             {
                 string[] cols = line.Split(',');
 
-                var matchupEntryModel = new MatchupEntryModel();
-                matchupEntryModel.Id = int.Parse(cols[0]);
+                var me = new MatchupEntryModel();
+                me.Id = int.Parse(cols[0]);
 
-                if (cols[1].Length.Equals(0))
+                if (cols[1].Length == 0)
                 {
-                    matchupEntryModel.TeamCompeting = null;
+                    me.TeamCompeting = null;
                 }
                 else
                 {
-                    matchupEntryModel.TeamCompeting = LookupTeamById(int.Parse(cols[1]));
+                    me.TeamCompeting = LookupTeamById(int.Parse(cols[1]));
 
                 }
 
-                matchupEntryModel.Score = double.Parse(cols[2]);
+                me.Score = double.Parse(cols[2]);
 
-                var parentId = 0;
-                if (int.TryParse(cols[3], out parentId))
+                if (int.TryParse(cols[3], out int parentId))
                 {
-                    matchupEntryModel.ParentMatchup = LookupMatchupById(parentId);
+                    me.ParentMatchup = LookupMatchupById(parentId);
                 }
                 else
                 {
-                    matchupEntryModel.ParentMatchup = null;
+                    me.ParentMatchup = null;
                 }
-                output.Add(matchupEntryModel);
+                output.Add(me);
             }
             return output;
         }
@@ -266,7 +265,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         private static List<MatchupEntryModel> ConvertStringToMatchupEntryModels(string input)
         {
             string[] ids = input.Split('|');
-            var output = new List<MatchupEntryModel>();
+            List<MatchupEntryModel> output = new List<MatchupEntryModel>();
             var entries = GlobalConfig.MatchupEntryFile.FullFilePath().LoadFile();
             var matchingEntries = new List<string>();
 
@@ -276,7 +275,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
                 {
                     string[] cols = entry.Split(',');
 
-                    if (cols[0].Equals(id))
+                    if (cols[0] == id)
                     {
                         matchingEntries.Add(entry);
                     }
@@ -296,7 +295,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             foreach (var team in teams)
             {
                 string[] cols = team.Split(',');
-                if (cols[0].Equals(id.ToString()))
+                if (cols[0] == id.ToString())
                 {
                     var matchingTeams = new List<string>();
                     matchingTeams.Add(team);
@@ -314,7 +313,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             foreach (var matchup in matchups)
             {
                 string[] cols = matchup.Split(',');
-                if (cols[0].Equals(id.ToString()))
+                if (cols[0] == id.ToString())
                 {
                     var matchingMatchups = new List<string>();
                     matchingMatchups.Add(matchup);
@@ -335,20 +334,20 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             {
                 string[] cols = line.Split(',');
 
-                var matchupModel = new MatchupModel()
+                var p = new MatchupModel()
                 {
                     Id = int.Parse(cols[0]),
                     Entries = ConvertStringToMatchupEntryModels(cols[1]),
                     MatchupRound = int.Parse(cols[3]),
                 };
 
-                if (!cols[2].Length.Equals(0))
+                if (cols[2].Length != 0)
                 {
-                    matchupModel.Winner = LookupTeamById(int.Parse(cols[2]));
+                    p.Winner = LookupTeamById(int.Parse(cols[2]));
                 }
 
 
-                output.Add(matchupModel);
+                output.Add(p);
             }
             return output;
         }
@@ -369,7 +368,6 @@ namespace TrackerLibrary.DataAccess.TextHelpers
 
             matchups.Add(matchup);
 
-
             foreach (var entry in matchup.Entries)
             {
                 entry.SaveEntryToFile();
@@ -379,15 +377,15 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             var lines = new List<string>();
 
             //id=0,entries=1(pipe delimited by id), winner=2, matchupRound=3
-            foreach (var match in matchups)
+            foreach (var m in matchups)
             {
                 var winner = string.Empty;
-                if (match.Winner != null)
+                if (m.Winner != null)
                 {
-                    winner = match.Winner.Id.ToString();
+                    winner = m.Winner.Id.ToString();
                 }
 
-                lines.Add($"{match.Id},{ConvertMatchupEntryListToString(match.Entries)},{winner}, {matchup.MatchupRound}");
+                lines.Add($"{ m.Id },{ ConvertMatchupEntryListToString(m.Entries) },{ winner }, { m.MatchupRound }");
             }
 
             File.WriteAllLines(GlobalConfig.MatchupFile.FullFilePath(), lines);
@@ -422,15 +420,15 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             var lines = new List<string>();
 
             //id=0,entries=1(pipe delimited by id), winner=2, matchupRound=3
-            foreach (var match in matchups)
+            foreach (var m in matchups)
             {
                 var winner = string.Empty;
-                if (match.Winner != null)
+                if (m.Winner != null)
                 {
-                    winner = match.Winner.Id.ToString();
+                    winner = m.Winner.Id.ToString();
                 }
 
-                lines.Add($"{match.Id},{ConvertMatchupEntryListToString(match.Entries)},{winner}, {matchup.MatchupRound}");
+                lines.Add($"{ m.Id },{ ConvertMatchupEntryListToString(m.Entries) },{ winner }, { m.MatchupRound }");
             }
 
             File.WriteAllLines(GlobalConfig.MatchupFile.FullFilePath(), lines);
@@ -469,7 +467,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
                 {
                     teamCompeting = e.TeamCompeting.Id.ToString();
                 }
-                lines.Add($"{e.Id},{teamCompeting},{e.Score},{parent}");
+                lines.Add($"{ e.Id },{ teamCompeting },{ e.Score },{ parent }");
             }
 
             File.WriteAllLines(GlobalConfig.MatchupEntryFile.FullFilePath(), lines);
@@ -505,7 +503,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
                 {
                     teamCompeting = e.TeamCompeting.Id.ToString();
                 }
-                lines.Add($"{e.Id},{teamCompeting},{e.Score},{parent}");
+                lines.Add($"{ e.Id },{ teamCompeting },{ e.Score },{ parent }");
             }
 
             File.WriteAllLines(GlobalConfig.MatchupEntryFile.FullFilePath(), lines);
@@ -515,9 +513,10 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             var lines = new List<string>();
 
-            foreach (var tournament in models)
+            foreach (var tm in models)
             {
-                lines.Add($"{tournament.Id},{tournament.TournamentName},{tournament.EntryFee},{ConvertTeamListToString(tournament.EnteredTeams)},{ConvertPrizeListToString(tournament.Prizes)},{ConvertRoundListToString(tournament.Rounds)}");
+                lines.Add($"{tm.Id},{tm.TournamentName},{tm.EntryFee},{ConvertTeamListToString(tm.EnteredTeams)},{ConvertPrizeListToString(tm.Prizes)},{ConvertRoundListToString(tm.Rounds)}");
+
             }
 
             File.WriteAllLines(GlobalConfig.TournamentFile.FullFilePath(), lines);
@@ -528,11 +527,11 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             //(Rounds - id ^ id ^ id | id ^ id ^ id | id ^ id ^ id)
             var output = string.Empty;
 
-            if (rounds.Count.Equals(0)) return string.Empty;
+            if (rounds.Count == 0) return string.Empty;
 
-            foreach (var round in rounds)
+            foreach (var r in rounds)
             {
-                output += $"{ConvertMatchupListToString(round)}|";
+                output += $"{ConvertMatchupListToString(r)}|";
             }
             output = output.Substring(0, output.Length - 1);
 
@@ -543,11 +542,11 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             var output = string.Empty;
 
-            if (matchups.Count.Equals(0)) return string.Empty;
+            if (matchups.Count == 0) return string.Empty;
 
-            foreach (var matchup in matchups)
+            foreach (var m in matchups)
             {
-                output += $"{matchup.Id}^";
+                output += $"{m.Id}^";
             }
             output = output.Substring(0, output.Length - 1);
 
@@ -558,12 +557,12 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             var output = string.Empty;
 
-            if (entries.Count.Equals(0)) return string.Empty;
+            if (entries.Count == 0) return string.Empty;
 
             //2|5|
-            foreach (var entry in entries)
+            foreach (var e in entries)
             {
-                output += $"{entry.Id}|";
+                output += $"{e.Id}|";
             }
             output = output.Substring(0, output.Length - 1);
 
@@ -574,11 +573,11 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             var output = string.Empty;
 
-            if (prizes.Count.Equals(0)) return string.Empty;
+            if (prizes.Count == 0) return string.Empty;
 
-            foreach (var prize in prizes)
+            foreach (var p in prizes)
             {
-                output += $"{prize.Id}|";
+                output += $"{p.Id}|";
             }
             output = output.Substring(0, output.Length - 1);
 
@@ -589,12 +588,12 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             var output = string.Empty;
 
-            if (teams.Count.Equals(0)) return string.Empty;
+            if (teams.Count == 0) return string.Empty;
 
             //2|5|
-            foreach (var team in teams)
+            foreach (var t in teams)
             {
-                output += $"{team.Id}|";
+                output += $"{t.Id}|";
             }
             output = output.Substring(0, output.Length - 1);
 
@@ -605,12 +604,12 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             var output = string.Empty;
 
-            if (people.Count.Equals(0)) return string.Empty;
+            if (people.Count == 0) return string.Empty;
 
             //2|5|
-            foreach (var person in people)
+            foreach (var p in people)
             {
-                output += $"{person.Id}|";
+                output += $"{p.Id}|";
             }
             output = output.Substring(0, output.Length - 1);
 

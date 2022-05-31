@@ -25,7 +25,7 @@ namespace TrackerLibrary.DataAccess
 
             if (people.Count > 0)
             {
-                currentId = people.OrderByDescending(person => person.Id).First().Id + 1;
+                currentId = people.OrderByDescending(x => x.Id).First().Id + 1;
             }
 
             model.Id = currentId;
@@ -64,17 +64,17 @@ namespace TrackerLibrary.DataAccess
         
         public List<PersonModel> GetPerson_All()
         {
-            return PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
+            return GlobalConfig.PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
         }
 
         public List<TournamentModel> GetTournament_All()
         {
-            return TournamentFile.FullFilePath().LoadFile().ConvertToTournamentModels();
+            return GlobalConfig.TournamentFile.FullFilePath().LoadFile().ConvertToTournamentModels();
         }
 
         public TeamModel CreateTeam(TeamModel model)
         {
-            var teams = TeamFile.FullFilePath().LoadFile().ConvertToTeamModels();
+            var teams = GlobalConfig.TeamFile.FullFilePath().LoadFile().ConvertToTeamModels();
 
             var currentId = 1;
 
@@ -98,19 +98,19 @@ namespace TrackerLibrary.DataAccess
 
         public List<TeamModel> GetTeams_All()
         {
-            return TeamFile.FullFilePath().LoadFile().ConvertToTeamModels();
+            return GlobalConfig.TeamFile.FullFilePath().LoadFile().ConvertToTeamModels();
 
         }
 
         public void CreateTournament(TournamentModel model)
         {
-            var tournaments = TournamentFile.FullFilePath().LoadFile().ConvertToTournamentModels();
+            var tournaments = GlobalConfig.TournamentFile.FullFilePath().LoadFile().ConvertToTournamentModels();
 
             var currentId = 1;
 
             if (tournaments.Count > 0)
             {
-                currentId = tournaments.OrderByDescending(team => team.Id).First().Id + 1;
+                currentId = tournaments.OrderByDescending(x => x.Id).First().Id + 1;
             }
 
             model.Id = currentId;
@@ -122,5 +122,6 @@ namespace TrackerLibrary.DataAccess
             tournaments.SaveToTournamentFile();
 
         }
+
     }
 }
