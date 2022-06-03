@@ -26,7 +26,6 @@ namespace TrackerLibrary
             
             CreateOtherRounds(model, rounds);
 
-            UpdateTournamentResults(model);
         }
 
         public static void UpdateTournamentResults(TournamentModel model)
@@ -37,7 +36,7 @@ namespace TrackerLibrary
             {
                 foreach (var rm in round)
                 {
-                    if (rm.Winner != null && (rm.Entries.Any(x => x.Score != 0 ) || rm.Entries.Count == 1))
+                    if (rm.Winner == null && (rm.Entries.Any(x => x.Score != 0 ) || rm.Entries.Count == 1))
                     {
                         toScore.Add(rm);
                     }
@@ -53,13 +52,13 @@ namespace TrackerLibrary
 
         private static void AdvanceWinners(List<MatchupModel> models, TournamentModel tournament)
         {
-            foreach (var m in models)
+            foreach (MatchupModel m in models)
             {
-                foreach (var round in tournament.Rounds)
+                foreach (List<MatchupModel> round in tournament.Rounds)
                 {
-                    foreach (var rm in round)
+                    foreach (MatchupModel rm in round)
                     {
-                        foreach (var me in rm.Entries)
+                        foreach (MatchupEntryModel me in rm.Entries)
                         {
                             if (me.ParentMatchup != null)
                             {
@@ -77,10 +76,10 @@ namespace TrackerLibrary
 
         private static void MarkWinnerInMatchups(List<MatchupModel> models)
         {
-            //  greater or lesser
+            // greater or lesser
             string greaterWins = ConfigurationManager.AppSettings["greaterWins"];
 
-            foreach (var m in models)
+            foreach (MatchupModel m in models)
             {
                 // Checks for bye week entry
                 if (m.Entries.Count == 1)
@@ -96,7 +95,7 @@ namespace TrackerLibrary
                     {
                         m.Winner = m.Entries[0].TeamCompeting;
                     }
-                    else if(m.Entries[1].Score < m.Entries[0].Score)
+                    else if (m.Entries[1].Score < m.Entries[0].Score)
                     {
                         m.Winner = m.Entries[1].TeamCompeting;
                     }
@@ -120,9 +119,8 @@ namespace TrackerLibrary
                     {
                         throw new Exception("We do not allow ties in this application.");
                     }
-                } 
+                }
             }
-
         }
 
         private static void CreateOtherRounds(TournamentModel model, int rounds)

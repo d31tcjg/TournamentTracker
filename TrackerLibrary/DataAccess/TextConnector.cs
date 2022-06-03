@@ -112,6 +112,9 @@ namespace TrackerLibrary.DataAccess
 
             tournaments.SaveToTournamentFile();
 
+            TournamentLogic.UpdateTournamentResults(model);
+
+
         }
 
     }
