@@ -10,16 +10,10 @@ namespace TrackerLibrary.DataAccess
 {
     public class TextConnector : IDataConnection
     {
-        private const string PrizesFile = "PrizeModels.csv";
-        private const string PeopleFile = "PersonModels.csv";
-        private const string TeamFile = "TeamModels.csv";
-        private const string TournamentFile = "TournamentModels.csv";
-        private const string MatchupFile = "MatchupModels.csv";
-        private const string MatchupEntriesFile = "MatchupEntriesModels.csv";
 
         public void CreatePerson(PersonModel model)
         {
-            var people = PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
+            var people = GlobalConfig.PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
 
             var currentId = 1;
 
@@ -40,7 +34,7 @@ namespace TrackerLibrary.DataAccess
         {
             // Load the text file
             // Convert the text to List<PrizeModel>
-            var prizes = PrizesFile.FullFilePath().LoadFile().ConvertToPrizeModels();
+            var prizes = GlobalConfig.PrizesFile.FullFilePath().LoadFile().ConvertToPrizeModels();
             
             // Find the max ID
             var currentId = 1;
