@@ -8078,7 +8078,7 @@ button.close {
 .navbar {
     box-shadow: none;
     border: none;
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .navbar-default .badge {
