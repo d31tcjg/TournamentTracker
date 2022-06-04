@@ -86,39 +86,43 @@ namespace TrackerLibrary
             // (new EmailAddressAttribute().IsValid("youremailhere@test.test")); 
             // .NET BuiltIn Email Verification 
 
-            if (! new EmailAddressAttribute().IsValid(p.EmailAddress))
+            if ( new EmailAddressAttribute().IsValid(p.EmailAddress))
             {
-                return;
+                string to = string.Empty;
+                string subject = string.Empty;
+                StringBuilder body = new StringBuilder();
+
+                if (competitor != null)
+                {
+                    subject = $"You have a new matchup with {competitor.TeamCompeting.TeamName}";
+
+                    body.AppendLine("<h1>You have a new matchup</h1>");
+                    body.Append("<strong>Competitor: ");
+                    body.Append(competitor.TeamCompeting.TeamName);
+                    body.AppendLine();
+                    body.AppendLine();
+                    body.AppendLine("Have a great time!");
+                    body.AppendLine("~Tournament Tracker");
+                }
+                else
+                {
+                    subject = "You have a bye week this round";
+
+                    body.AppendLine("Enjoy your round off!");
+                    body.AppendLine("~Tournament Tracker");
+                }
+
+                to = p.EmailAddress;
+
+                EmailLogic.SendEmail(to, subject, body.ToString());
             }
-  
-            string to = string.Empty;
-            string subject = string.Empty;
-            StringBuilder body = new StringBuilder();
 
-
-            if (competitor != null)
+            //.NET Built In Phone Validation, same as email, internally uses RegEx
+            if (new PhoneAttribute().IsValid(p.CellphoneNumber))
             {
-                subject = $"You have a new matchup with {competitor.TeamCompeting.TeamName}";
-
-                body.AppendLine("<h1>You have a new matchup</h1>");
-                body.Append("<strong>Competitor: ");
-                body.Append(competitor.TeamCompeting.TeamName);
-                body.AppendLine();
-                body.AppendLine();
-                body.AppendLine("Have a great time!");
-                body.AppendLine("~Tournament Tracker");
-            }
-            else
-            {
-                subject = "You have a bye week this round";
-
-                body.AppendLine("Enjoy your round off!");
-                body.AppendLine("~Tournament Tracker");
+                SMSLogic.SendSMSMessge(p.CellphoneNumber, $"You have a new matchup with this {competitor.TeamCompeting.TeamName}");
             }
 
-            to = p.EmailAddress;
-
-            EmailLogic.SendEmail( to, subject, body.ToString());
         }
 
         private static int CheckCurrentRound(this TournamentModel model)
