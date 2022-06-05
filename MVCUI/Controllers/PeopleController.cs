@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TrackerLibrary;
+using TrackerLibrary.Models;
 
 namespace MVCUI.Controllers
 {
@@ -11,13 +13,9 @@ namespace MVCUI.Controllers
         // GET: People
         public ActionResult Index()
         {
-            return View();
-        }
+            List<PersonModel> availablePeople = GlobalConfig.Connection.GetPerson_All();
 
-        // GET: People/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
+            return View(availablePeople);
         }
 
         // GET: People/Create
@@ -28,57 +26,19 @@ namespace MVCUI.Controllers
 
         // POST: People/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(PersonModel p)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: People/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: People/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: People/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: People/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    GlobalConfig.Connection.CreatePerson(p);
+                    return RedirectToAction("Index"); 
+                }
+                else
+                {
+                    return View();
+                }
             }
             catch
             {
