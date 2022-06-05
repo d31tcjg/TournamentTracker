@@ -97,7 +97,6 @@ namespace TrackerUI
             {
                 selectedPrizes.Remove(prize);
                 WireUpLists();
-                //TODO - Create a deletion from Db/TextFile
             }
         }
 
