@@ -8,7 +8,7 @@ using TrackerLibrary.Models;
 
 namespace MVCUI.Models
 {
-    public class TournamentMVCModel
+    public class TournamentMVCCreateModel
     {
         /// <summary>
         /// The name given to this tournament. 

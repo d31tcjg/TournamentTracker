@@ -30,8 +30,7 @@
         <ul class="list-unstyled tourney-display">
             @foreach (var item in Model)
             {
-                <li><a href="/">@item.TournamentName</a></li>
-                //TODO - Watch Tim's intro into MVC YT video
+                <li>@Html.ActionLink(item.TournamentName, "Details", "Tournaments", new { id = item.Id }, new {})</li>
 
             }
         </ul>

@@ -1,0 +1,15 @@
+﻿@model MVCUI.Models.TournamentMVCDetailsModel
+
+@{
+    ViewBag.Title = "Tournament Viewer";
+}
+
+<h2>Tournament: @Html.DisplayFor(model => model.TournamentName)</h2>
+
+<div>
+    <hr />
+    
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
