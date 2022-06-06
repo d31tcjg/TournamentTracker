@@ -9,7 +9,7 @@
         <div class="jumbotron">
             <h1>Office Fun!</h1>
             <p class="lead">Track you in-office tournaments easily and have a great time doing it.</p>
-            <p><a href="https://asp.net" class="btn btn-primary btn-lg">Create a Tournament</a></p>
+            <p>@Html.ActionLink("Create a Tournament", "Create", "Tournaments",new {area = ""} , new { @class = "btn btn-primary btn-lg" })</p>
         </div>
 
         <div class="row">
