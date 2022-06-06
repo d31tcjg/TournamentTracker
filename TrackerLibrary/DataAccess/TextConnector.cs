@@ -56,6 +56,11 @@ namespace TrackerLibrary.DataAccess
             return GlobalConfig.PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
         }
 
+        public List<PrizeModel> GetPrizes_All()
+        {
+            return GlobalConfig.PrizesFile.FullFilePath().LoadFile().ConvertToPrizeModels();
+        }
+
         public List<TournamentModel> GetTournament_All()
         {
             return GlobalConfig.TournamentFile.FullFilePath().LoadFile().ConvertToTournamentModels();
