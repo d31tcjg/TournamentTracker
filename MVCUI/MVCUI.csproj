@@ -119,6 +119,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Models\MatchupMVCModel.cs" />
     <Compile Include="Models\RoundMVCModel.cs" />
     <Compile Include="Models\TeamMVCModel.cs" />
     <Compile Include="Models\TournamentMVCCreateModel.cs" />

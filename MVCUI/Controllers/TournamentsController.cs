@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using MVCUI.Models;
@@ -46,17 +47,60 @@ namespace MVCUI.Controllers
                         {
                             status = RoundStatus.Active;
                             activeFound = true;
+
+                            if (roundId == 0)
+                            {
+                                roundId = i + 1;
+                            }
                         } 
                     }
 
                     input.Rounds.Add(new RoundMVCModel{ RoundName = "Round " + (i + 1), Status = status, RoundNumber = i + 1});
                 }
+
+                input.Matchups = GetMatchups(orderedRounds[roundId - 1]);
+
                 return View(input);
             }
             catch
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        private List<MatchupMVCModel> GetMatchups(List<MatchupModel> input)
+        {
+            List<MatchupMVCModel> output = new List<MatchupMVCModel>();
+
+            foreach (var item in input)
+            {
+                int teamTwoId = 0;
+                string teamOneName = String.Empty;
+                string teamTwoName = "Bye";
+                double teamTwoScore = 0;
+
+                teamOneName = item.Entries[0].TeamCompeting == null ? "To Be Determined" : item.Entries[0].TeamCompeting.TeamName;
+
+                if (item.Entries.Count > 1)
+                {
+                    teamTwoId = item.Entries[1].Id;
+                    teamTwoName = item.Entries[1].TeamCompeting == null ? "To Be Determined" : item.Entries[1].TeamCompeting.TeamName;
+                    teamTwoScore = item.Entries[1].Score;
+                }
+
+                output.Add(new MatchupMVCModel
+                {
+                    MatchupId = item.Id,
+                    FirstTeamMatchupEntryId = item.Entries[0].Id,
+                    FirstTeamName = teamOneName,
+                    FirstTeamScore = item.Entries[0].Score,
+                    SecondTeamMatchupEntryId = teamTwoId,
+                    SecondTeamName = teamTwoName,
+                    SecondTeamScore = teamTwoScore
+                });
+            }
+
+            return output;
         }
 
         // GET: People/Create
