@@ -9,6 +9,8 @@ namespace MVCUI.Models
     public class MatchupMVCModel
     {
         public int MatchupId { get; set; }
+        public int TournamentId { get; set; }
+        public int RoundNumber { get; set; }
         public int FirstTeamMatchupEntryId { get; set; }
         public string FirstTeamName { get; set; }
         public double FirstTeamScore { get; set; }

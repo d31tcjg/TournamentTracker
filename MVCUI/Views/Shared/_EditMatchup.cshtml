@@ -1,0 +1,39 @@
+﻿@using MVCUI.Controllers
+@model MVCUI.Models.MatchupMVCModel
+
+@using (Html.BeginForm("EditTournamentMatchup", "Tournaments"))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.MatchupId)
+    @Html.HiddenFor(model => model.FirstTeamMatchupEntryId)
+    @Html.HiddenFor(model => model.SecondTeamMatchupEntryId)
+    @Html.HiddenFor(model => model.TournamentId)
+    @Html.HiddenFor(model => model.RoundNumber)
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label">@Model.FirstTeamName</label>
+            <div class="">
+                @Html.EditorFor(model => model.FirstTeamScore, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstTeamScore, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">@Model.SecondTeamName</label>
+            <div class="">
+                @Html.EditorFor(model => model.SecondTeamScore, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SecondTeamScore, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Score Match" class="btn btn-default"/>
+            </div>
+        </div>
+    </div>
+}

@@ -40,7 +40,7 @@ namespace TrackerLibrary
             {
                 foreach (var rm in round)
                 {
-                    if (rm.Winner == null && (rm.Entries.Any(x => x.Score != 0 ) || rm.Entries.Count == 1))
+                    if ((rm.Entries.Any(x => x.Score != 0 ) || rm.Entries.Count == 1))
                     {
                         toScore.Add(rm);
                     }
@@ -120,7 +120,14 @@ namespace TrackerLibrary
             //.NET Built In Phone Validation, same as email, internally uses RegEx
             if (new PhoneAttribute().IsValid(p.CellphoneNumber))
             {
-                SMSLogic.SendSMSMessge(p.CellphoneNumber, $"You have a new matchup with this {competitor.TeamCompeting.TeamName}");
+                if (competitor != null)
+                {
+                    SMSLogic.SendSMSMessge(p.CellphoneNumber, $"You have a new matchup with this {competitor.TeamCompeting.TeamName}");
+                }
+                else
+                {
+                    SMSLogic.SendSMSMessge(p.CellphoneNumber, $"You have a bye week for the first round.");
+                }
             }
 
         }

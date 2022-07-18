@@ -280,6 +280,7 @@
     <Content Include="Views\Prizes\Create.cshtml" />
     <Content Include="Views\Tournaments\Create.cshtml" />
     <Content Include="Views\Tournaments\Details.cshtml" />
+    <Content Include="Views\Shared\_EditMatchup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
